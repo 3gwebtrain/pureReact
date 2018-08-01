@@ -38,6 +38,10 @@ const LikeButton = ({count}) => (
 	</span>
 	);
 
+LikeButton.propTypes = {
+	count : PropTypes.number
+}
+
 const MoreOptionsButton = () => (
 	<i className="fa fa-ellipsis-h more-options-button"/>
 	);
@@ -48,6 +52,10 @@ function Avatar({hash})  {
 	return(
 		<img src={url} className="avatar" alt="avatar" />
 	)
+}
+
+Avatar.propTypes = {
+	hash:PropTypes.string.isRequired
 }
 
 function Message({text}){
@@ -68,6 +76,13 @@ function NameWithHandle({author}){
 	);
 }
 
+NameWithHandle.propTypes = {
+	author: PropTypes.shape({
+		name:PropTypes.string.isRequired,
+		handle : PropTypes.string.isRequired
+	}).isRequired
+}
+
 
 function Tweet({tweet}) {
 	return (
@@ -86,6 +101,22 @@ function Tweet({tweet}) {
 		</div>
 	)
 }
+
+Tweet.propTypes  = {
+
+    tweetObject : PropTypes.shape({
+        message:PropTypes.string.isRequired,
+        gravatra:PropTypes.string.isRequired,
+        author:PropTypes.shape({
+            handle:PropTypes.string.isRequired,
+            name:PropTypes.string.isRequired
+        }),
+        likes:PropTypes.number.isRequired,
+        retweets:PropTypes.number.isRequired,
+        timestamp:PropTypes.string.isRequired
+
+    })
+ }
 
 var testTweet = {
 	message: "Something about cats.",
