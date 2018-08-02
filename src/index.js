@@ -1,68 +1,110 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import Time from './time';
 import './index.css';
 
-const Time = () => (
-	<span className="time">3h ago</span>
-	);
+const FileList = ({files}) => (
 
-const ReplyButton = () => (
-	<i className="fa fa-reply reply-button"/>
-	);
+	<table className="file-list">
+		<tbody>
+			{files.map(file => (
+				<FileListItem key={file.id} file={file} />
+			))}
+		</tbody>
+	</table>
 
-const RetweetButton = () => (
-	<i className="fa fa-retweet retweet-button"/>
-	);
+);
 
-const LikeButton = () => (
-	<i className="fa fa-heart like-button"/>
-	);
-
-const MoreOptionsButton = () => (
-	<i className="fa fa-ellipsis-h more-options-button"/>
-	);
-
-
-function Avatar()  {
-	return(
-		<img src="https://www.gravatar.com/avatar/nothing" className="avatar" alt="avatar" />
-	)
+FileList.propTypes = {
+	files : PropTypes.array
 }
 
-function Message(){
-	return(
-		<div className="message">
-			This is less than 40 charactor
-		</div>
-	)
+const FileListItem = ({file}) => (
+	<tr className="file-list-item">
+		<FileName file={file} />
+		<td><CommitMessage commit={file.latestCommit} /></td>
+		<td className="age">
+			<Time time={file.updated_at} />
+		</td>
+	</tr>
+)
+
+FileListItem.propTypes = {
+	file:PropTypes.object.isRequired
 }
 
-function NameWithHandle(){
+const FileIcon = ({file}) => {
+
+	let icon = 'fa-file-text-o';
+
+	if(file.type === 'folder'){
+		icon = 'fa-folder';
+	}
+
 	return(
-		<span className="name-with-handle">
-			<span className="name">Your Name</span>
-			<span className="handle">@yourhandle</span>
-		</span>
+		<td className="file-icon">
+			<i className={`fa ${icon}`} />
+		</td>
 	);
+};
+
+FileIcon.propTypes = {
+	file:PropTypes.object.isRequired
 }
 
-
-function Tweet() {
+function FileName({file}){
 	return (
-		<div className="tweet">
-			<Avatar />
-			<div className="content">
-				<NameWithHandle />
-				<Message />
-				<div className="buttons">
-					<ReplyButton />
-					<RetweetButton />
-					<LikeButton />
-					<MoreOptionsButton />
-				</div>
-			</div>
-		</div>
+		<React.Fragment>
+			<FileIcon file={file} />
+			<td className="file-name">{file.name}</td>
+		</React.Fragment>
 	)
 }
 
-ReactDOM.render(<Tweet />, document.getElementById('root'));
+FileName.propTypes = {
+	file:PropTypes.object.isRequired
+}
+
+
+const CommitMessage = ({commit}) => (commit.message);
+
+
+CommitMessage.propTypes = {
+  commit: PropTypes.object.isRequired
+}
+
+
+const testFiles = [
+
+	{
+		id: 1,
+		name: 'src',
+		type: 'folder',
+		updated_at: "2016-07-11 21:24:00",
+		latestCommit: {
+			message: 'Initial commit'
+		}
+	},
+	{
+		id: 2,
+		name: 'tests',
+		type: 'folder',
+		updated_at: "2016-07-11 21:24:00",
+		latestCommit: {
+			message: 'Initial commit'
+		}
+	},
+	{
+		id: 3,
+		name: 'README',
+		type: 'file',
+		updated_at: "2016-07-18 21:24:00",
+		latestCommit: {
+			message: 'Added a readme'
+		}
+	}
+
+];
+
+ReactDOM.render(<FileList files={testFiles} />, document.getElementById('root'));
